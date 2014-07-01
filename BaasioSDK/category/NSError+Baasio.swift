@@ -1,0 +1,31 @@
+//
+//  NSError+Baasio.swift
+//  baas.io-sdk-ios-swift
+//
+//  Created by kimkkikki on 2014. 6. 13..
+//  Copyright (c) 2014년 baas.io. All rights reserved.
+//
+
+import Foundation
+
+let UNKNOWN_ERROR = -100
+let BAD_REQUEST_ERROR = 100
+let RESOURCE_NOT_FOUND_ERROR = 101
+let MISSING_REQUIRED_PROPERTY_ERROR = 102
+let INVALID_PRECONDITION_ERROR = 103
+let NOT_IMPLEMENTED_ERROR = 190
+let AUTH_ERROR = 200
+let INVALID_USERNAME_OR_PASSWORD_ERROR = 201
+let UNAUTHORIZED_ERROR = 202
+let BAD_TOKEN_ERROR = 210
+let EXPIRED_TOKEN_ERROR = 211
+let PUSH_APPLICATION_NOT_ACTIVATED_ERROR = 600
+let PUSH_ERROR = 620
+let RESOURCE_ALREADY_EXIST_ERROR = 911
+let PRESERVED_RESOURCE_ERROR = 912
+let DUPLICATED_UNIQUE_PROPERTY_ERROR = 915
+let QUERY_PARSE_ERROR = 915
+
+class BaasioError : NSError {
+    var uuid:String?
+}

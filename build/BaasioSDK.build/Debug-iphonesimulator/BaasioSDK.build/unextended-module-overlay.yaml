@@ -1,0 +1,13 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': '/Users/macbook/Library/Developer/Xcode/DerivedData/BaasioSDK-apzasokedlgofpapicmqffugyddw/Build/Products/Debug-iphonesimulator/BaasioSDK.framework/Modules'
+    'contents': [{
+      'type': 'file',
+      'name': 'module.modulemap',
+      'external-contents': '/Users/macbook/Documents/baas.io/BaasioSDK/build/BaasioSDK.build/Debug-iphonesimulator/BaasioSDK.build/unextended-module.modulemap',
+    }]
+  }]
+}

@@ -1,0 +1,6 @@
+framework module BaasioSDK {
+  umbrella header "BaasioSDK.h"
+
+  export *
+  module * { export * }
+}
