@@ -11,7 +11,12 @@ import Foundation
 class BaasioEntity: NSObject {
     var entityName:String?
     var uuid:String? {
-        return _entity["uuid"] as? String
+        get {
+            return _entity["uuid"] as? String
+        }
+        set {
+            _entity["uuid"] = newValue
+        }
     }
     let created:NSDate?
     let modified:NSDate?
