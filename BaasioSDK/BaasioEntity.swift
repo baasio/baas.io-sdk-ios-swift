@@ -92,8 +92,9 @@ class BaasioEntity: NSObject {
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil!,
             success: { (result:AnyObject!) -> Void in
                 let response:NSDictionary = result as NSDictionary
-                let dictionary = NSDictionary(response["entities"]![0]!)
-                let type:String = response["type"]! as String
+                var entities = response["entities"] as NSArray
+                var dictionary = entities[0] as NSDictionary
+                var type:String = dictionary["type"] as String
                 
                 var entity:BaasioEntity = BaasioEntity.entityWithName(type)
                 entity.set(dictionary)
@@ -110,9 +111,11 @@ class BaasioEntity: NSObject {
     func saveInBackground(success:(BaasioEntity) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(entityName!, method:"POST", params:_entity,
             success: { (result:AnyObject!) -> Void in
-                let response:NSDictionary = result as NSDictionary
-                let dictionary = NSDictionary(response["entities"]![0]!)
-                let type:String = response["type"]! as String
+                var response:NSDictionary = result as NSDictionary
+                
+                var entities = response["entities"] as NSArray
+                var dictionary = entities[0] as NSDictionary
+                var type:String = dictionary["type"] as String
                 
                 var entity:BaasioEntity = BaasioEntity.entityWithName(type)
                 entity.set(dictionary)
@@ -147,8 +150,9 @@ class BaasioEntity: NSObject {
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"PUT", params:_entity,
             success: { (result:AnyObject!) -> Void in
                 let response:NSDictionary = result as NSDictionary
-                let dictionary = NSDictionary(response["entities"]![0]!)
-                let type:String = response["type"]! as String
+                var entities = response["entities"] as NSArray
+                var dictionary = entities[0] as NSDictionary
+                var type:String = dictionary["type"] as String
                 
                 var entity:BaasioEntity = BaasioEntity.entityWithName(type)
                 entity.set(dictionary)
