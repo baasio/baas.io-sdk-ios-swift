@@ -29,6 +29,8 @@ class BaasioNetworkManager: NSObject {
         logging(path, method: method, params: params)
         
         var baseURL = Baasio.sharedInstance().getAPIURL()
+        var manager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
+        manager.responseSerializer = AFJSONResponseSerializer()
         
         var parameters:NSDictionary?
         if method == "GET" || method == "DELETE" {
@@ -36,7 +38,7 @@ class BaasioNetworkManager: NSObject {
         }
         
         var error:NSError?
-        var request:NSMutableURLRequest = AFHTTPRequestSerializer().requestWithMethod(method, URLString:"\(baseURL)/\(path)", parameters:parameters, error:&error)
+        var request:NSMutableURLRequest = manager.requestSerializer.requestWithMethod(method, URLString:"\(baseURL)/\(path)", parameters:parameters, error:&error)
         
         if error != nil {
             failure(error!)
@@ -55,9 +57,6 @@ class BaasioNetworkManager: NSObject {
             
             request.HTTPBody = data
         }
-        
-        var manager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
-        manager.responseSerializer = AFJSONResponseSerializer()
         
         var operation:AFHTTPRequestOperation = manager.HTTPRequestOperationWithRequest(request,
             success: { (operation:AFHTTPRequestOperation!, responseObject:AnyObject!) in
@@ -104,8 +103,11 @@ class BaasioNetworkManager: NSObject {
         fileLogging(path, httpMethod: method, bodyData: bodyData, params: params, filename: filename, contentType: contentType)
         
         var url:NSURL = Baasio.sharedInstance().getAPIURL()
+        var manager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
+        manager.requestSerializer = AFHTTPRequestSerializer()
+        
         var error:NSError?
-        var request:NSMutableURLRequest = AFHTTPRequestSerializer().multipartFormRequestWithMethod(method, URLString:"\(url)/\(path)", parameters:nil,
+        var request:NSMutableURLRequest = manager.requestSerializer.multipartFormRequestWithMethod(method, URLString:"\(url)/\(path)", parameters:nil,
             constructingBodyWithBlock: {
                 (formData:AFMultipartFormData!) in
                 var mutableParams:NSMutableDictionary = NSMutableDictionary(dictionary: params)
@@ -115,11 +117,10 @@ class BaasioNetworkManager: NSObject {
                         _contentType = self.mimeTypeForFileAtPath(filename)
                         mutableParams.setObject(_contentType, forKey:"content-type")
                     }
-                    
                     formData.appendPartWithFileData(bodyData, name:"file", fileName:filename, mimeType:_contentType)
-                    
+
                     var error:NSError?
-                    var data:NSData = NSJSONSerialization.dataWithJSONObject(mutableParams,options:NSJSONWritingOptions.PrettyPrinted, error:&error)
+                    var data:NSData = NSJSONSerialization.dataWithJSONObject(mutableParams, options:NSJSONWritingOptions.PrettyPrinted, error:&error)
                     
                     formData.appendPartWithFileData(data, name:"entity", fileName:"entity", mimeType:"application/json")
                 }
@@ -129,7 +130,6 @@ class BaasioNetworkManager: NSObject {
         
         var failureClosure = self.failure(failure)
         
-        var manager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
         manager.responseSerializer = AFJSONResponseSerializer()
         var operation:AFHTTPRequestOperation = manager.HTTPRequestOperationWithRequest(request,
             success: { (operation:AFHTTPRequestOperation!, responseObject:AnyObject!) in

@@ -59,8 +59,10 @@ class SimpleNetworkManager: NSObject {
             parameters = params
         }
         
+        var manager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
+        
         var error:NSError?
-        var request:NSMutableURLRequest = AFHTTPRequestSerializer().requestWithMethod(method, URLString:path, parameters:parameters, error:&error)
+        var request:NSMutableURLRequest = manager.requestSerializer.requestWithMethod(method, URLString:path, parameters:parameters, error:&error)
         
         if error != nil {
             failure(error!)
@@ -80,8 +82,7 @@ class SimpleNetworkManager: NSObject {
             request.allHTTPHeaderFields = headerFields
         }
         
-        var manager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
-        var afoperation:AFHTTPRequestOperation = manager.HTTPRequestOperationWithRequest(request,
+        var operation:AFHTTPRequestOperation = manager.HTTPRequestOperationWithRequest(request,
             success: { (operation: AFHTTPRequestOperation!, responseObject: AnyObject!) in
                 NetworkActivityIndicatorManager.sharedInstance().hide()
                 success(operation.responseString)
@@ -92,8 +93,8 @@ class SimpleNetworkManager: NSObject {
                 failure(operation.error)
             })
         NetworkActivityIndicatorManager.sharedInstance().show()
-        afoperation.start()
-        return afoperation
+        operation.start()
+        return operation
     }
     
     func commonLogging(path: String, method: String, params: NSDictionary, headerFields: NSDictionary) {

@@ -10,10 +10,20 @@ import Foundation
 
 class BaasioFile: BaasioEntity {
     var filename:String? {
-        return objectForKey("filename") as? String
+        get {
+            return objectForKey("filename") as? String
+        }
+        set {
+            setObject(newValue!, forKey:"filename")
+        }
     }
     var contentType:String? {
-        return objectForKey("content-type") as? String
+        get {
+            return objectForKey("content-type") as? String
+        }
+        set {
+            setObject(newValue!, forKey:"content-type")
+        }
     }
     var data:NSData?
     
@@ -35,14 +45,17 @@ class BaasioFile: BaasioEntity {
     func fileDownloadInBackground(downloadPath:String, success:(String) -> (Void), failure:(NSError) -> (Void), progress:(Float) -> (Void)) -> NSOperation {
         let url = Baasio.sharedInstance().getAPIURL()
         let path = "\(url)/\(entityName)/\(uuid)/data"
+        
         var error:NSError?
-        
-        var request:NSMutableURLRequest = AFHTTPRequestSerializer().requestWithMethod("GET", URLString:path, parameters:nil, error:&error)
-        
-        var filureClosure = BaasioNetworkManager.sharedInstance().failure(failure)
         
         var manager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
         manager.responseSerializer = AFJSONResponseSerializer()
+        
+        var request:NSMutableURLRequest = manager.requestSerializer.requestWithMethod("GET", URLString:path, parameters:nil, error:&error)
+        request = Baasio.sharedInstance().setAuthorization(request)
+        
+        var failureClosure = BaasioNetworkManager.sharedInstance().failure(failure)
+        
         var operation:AFHTTPRequestOperation = manager.HTTPRequestOperationWithRequest(request,
             success: { (operation:AFHTTPRequestOperation!, responseObject:AnyObject!) in
                 NetworkActivityIndicatorManager.sharedInstance().hide()
@@ -55,8 +68,8 @@ class BaasioFile: BaasioEntity {
         operation.outputStream = NSOutputStream.outputStreamToFileAtPath(downloadPath, append:false)
         operation.setDownloadProgressBlock({
             (bytesRead:Int, totalBytesRead:CLongLong, totalBytesExpectedToRead:CLongLong) in
-            let progressNum = totalBytesRead / totalBytesExpectedToRead
-            progress(Float(progressNum))
+            let progressNum = Float(totalBytesRead) / Float(totalBytesExpectedToRead)
+            progress(progressNum)
             })
         operation.start()
         NetworkActivityIndicatorManager.sharedInstance().show()
