@@ -53,7 +53,7 @@ class BaasioGroup : BaasioEntity {
             }, failure:failure)!
     }
     
-    func getInBackground(uuid:String, success:(BaasioGroup) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func getInBackground(uuid:String, success:(BaasioGroup) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         return BaasioFile.getInBackground("groups", uuid:uuid, success:{ (entity:BaasioEntity) in
             var group:BaasioGroup = BaasioGroup()
             group.set(entity.dictionary)
@@ -61,21 +61,29 @@ class BaasioGroup : BaasioEntity {
             }, failure:failure)
     }
     
-    class func get(uuid:String, error:NSErrorPointer) -> BaasioGroup {
-        var entity:BaasioEntity = super.get("groups", uuid:uuid, error:error)
+    class func get(uuid:String, error:NSErrorPointer) -> BaasioGroup? {
+        var entity:BaasioEntity? = super.get("groups", uuid:uuid, error:error)
         var group:BaasioGroup = BaasioGroup()
-        group.set(entity.dictionary)
-        return group
+        if entity != nil {
+            group.set(entity!.dictionary)
+            return group
+        } else {
+            return nil
+        }
     }
     
-    override func save(error:NSErrorPointer) -> BaasioGroup {
-        var entity:BaasioEntity = super.save(error)
+    override func save(error:NSErrorPointer) -> BaasioGroup? {
+        var entity:BaasioEntity? = super.save(error)
         var group:BaasioGroup = BaasioGroup()
-        group.set(entity.dictionary)
-        return group
+        if entity != nil {
+            group.set(entity!.dictionary)
+            return group
+        } else {
+            return nil
+        }
     }
     
-    override func saveInBackground(success: (BaasioGroup) -> (Void), failure: (NSError) -> (Void)) -> NSOperation  {
+    override func saveInBackground(success: (BaasioGroup) -> (Void), failure: (NSError) -> (Void)) -> NSOperation?  {
         return super.saveInBackground({ (entity:BaasioEntity) in
             var group:BaasioGroup = BaasioGroup()
             group.set(entity.dictionary)
@@ -83,14 +91,18 @@ class BaasioGroup : BaasioEntity {
         }, failure:failure)
     }
     
-    override func update(error: NSErrorPointer) -> BaasioEntity  {
-        var entity:BaasioEntity = super.update(error)
+    override func update(error: NSErrorPointer) -> BaasioEntity?  {
+        var entity:BaasioEntity? = super.update(error)
         var group:BaasioGroup = BaasioGroup()
-        group.set(entity.dictionary)
-        return group
+        if entity != nil {
+            group.set(entity!.dictionary)
+            return group
+        } else {
+            return nil
+        }
     }
     
-    override func updateInBackground(success: (BaasioGroup) -> (Void), failure: (NSError) -> (Void)) -> NSOperation  {
+    override func updateInBackground(success: (BaasioGroup) -> (Void), failure: (NSError) -> (Void)) -> NSOperation?  {
         return super.updateInBackground({ (entity:BaasioEntity) in
             var group:BaasioGroup = BaasioGroup()
             group.set(entity.dictionary)

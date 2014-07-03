@@ -26,15 +26,18 @@ class BaasioUser :BaasioEntity {
         return Baasio.sharedInstance().currentUser!
     }
     
-    override func update(error:NSErrorPointer) -> BaasioUser {
-        let entity:BaasioEntity = super.update(error)
+    override func update(error:NSErrorPointer) -> BaasioUser? {
+        let entity:BaasioEntity? = super.update(error)
         var user:BaasioUser = BaasioUser()
-        user.set(entity.dictionary)
-        
-        return user
+        if entity != nil {
+            user.set(entity!.dictionary)
+            return user
+        } else {
+            return nil
+        }
     }
     
-    override func updateInBackground(success: (BaasioEntity) -> (Void), failure: (NSError) -> (Void)) -> NSOperation {
+    override func updateInBackground(success: (BaasioEntity) -> (Void), failure: (NSError) -> (Void)) -> NSOperation? {
         return super.updateInBackground({ (entity:BaasioEntity) -> (Void) in
                 var user:BaasioUser = BaasioUser()
                 user.set(entity.dictionary)

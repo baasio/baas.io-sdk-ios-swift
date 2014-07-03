@@ -88,7 +88,7 @@ class BaasioFile: BaasioEntity {
             success:success, failure:failure, progress:progress)
     }
     
-    func getInBackground(success:(BaasioFile) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func getInBackground(success:(BaasioFile) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         return BaasioFile.getInBackground(entityName!, uuid:uuid!,
             success:{ (entity:BaasioEntity) in
                 var file:BaasioFile = BaasioFile()
@@ -97,7 +97,7 @@ class BaasioFile: BaasioEntity {
             }, failure:failure)
     }
     
-    override func updateInBackground(success:(BaasioFile) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    override func updateInBackground(success:(BaasioFile) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         return super.updateInBackground({
             (entity:BaasioEntity) in
             var file:BaasioFile = BaasioFile()

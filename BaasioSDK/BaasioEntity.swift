@@ -57,13 +57,13 @@ class BaasioEntity: NSObject {
         BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"DELETE", params:_entity, error:error)
     }
     
-    func disconnectInBackground(entity:BaasioEntity, relationship:String, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func disconnectInBackground(entity:BaasioEntity, relationship:String, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         let path:String = "\(entityName)/\(uuid)/\(relationship)/\(entity.entityName)/\(entity.uuid)"
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:_entity,
             success: { (response:AnyObject!) -> Void in
                 success()
             },
-            failure:failure)!
+            failure:failure)
     }
     
     // MARK: - Data
@@ -81,12 +81,12 @@ class BaasioEntity: NSObject {
     }
     
     // MARK: - Entity
-    class func get(entityName:String, uuid:String, error:NSErrorPointer) -> BaasioEntity {
+    class func get(entityName:String, uuid:String, error:NSErrorPointer) -> BaasioEntity? {
         let path:String = "\(entityName)/\(uuid)"
-        return BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"GET", params:nil, error:error) as BaasioEntity
+        return BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"GET", params:nil, error:error) as? BaasioEntity
     }
     
-    class func getInBackground(entityName:String, uuid:String, success:(BaasioEntity) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    class func getInBackground(entityName:String, uuid:String, success:(BaasioEntity) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         let path:String = "\(entityName)/\(uuid)"
         
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil,
@@ -101,14 +101,14 @@ class BaasioEntity: NSObject {
                 
                 success(entity)
             },
-            failure:failure)!
+            failure:failure)
     }
     
-    func save(error:NSErrorPointer) -> BaasioEntity {
-        return BaasioNetworkManager.sharedInstance().connectWithHTTPSync(entityName!, method:"POST", params:_entity, error:error) as BaasioEntity
+    func save(error:NSErrorPointer) -> BaasioEntity? {
+        return BaasioNetworkManager.sharedInstance().connectWithHTTPSync(entityName!, method:"POST", params:_entity, error:error) as BaasioEntity?
     }
     
-    func saveInBackground(success:(BaasioEntity) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func saveInBackground(success:(BaasioEntity) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(entityName!, method:"POST", params:_entity,
             success: { (result:AnyObject!) -> Void in
                 var response:NSDictionary = result as NSDictionary
@@ -122,7 +122,7 @@ class BaasioEntity: NSObject {
                 
                 success(entity)
             },
-            failure:failure)!
+            failure:failure)
     }
     
     // delete라는 기본 메소드가 추가됨으로 인해 이름 변경
@@ -137,14 +137,14 @@ class BaasioEntity: NSObject {
             success: { (result:AnyObject!) -> Void in
                 success()
             },
-            failure:failure)!
+            failure:failure)
     }
     
-    func update(error:NSErrorPointer) -> BaasioEntity {
-        return BaasioNetworkManager.sharedInstance().connectWithHTTPSync(entityName!, method:"PUT", params:_entity, error:error) as BaasioEntity
+    func update(error:NSErrorPointer) -> BaasioEntity? {
+        return BaasioNetworkManager.sharedInstance().connectWithHTTPSync(entityName!, method:"PUT", params:_entity, error:error) as? BaasioEntity
     }
     
-    func updateInBackground(success:(BaasioEntity) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func updateInBackground(success:(BaasioEntity) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         let path:String = "\(entityName)/\(uuid)"
         
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"PUT", params:_entity,
@@ -159,7 +159,7 @@ class BaasioEntity: NSObject {
                 
                 success(entity)
             },
-            failure:failure)!
+            failure:failure)
     }
     
     // MARK: - Super
