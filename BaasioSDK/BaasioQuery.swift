@@ -152,7 +152,7 @@ class BaasioQuery: NSObject {
         return objects
     }
     
-    func queryInBackground(success:(NSArray) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func queryInBackground(success:(NSArray) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         var prefixPath:String = _collectionName!
         if _group != nil {
             prefixPath = "group/\(_group)users"
@@ -164,7 +164,7 @@ class BaasioQuery: NSObject {
             (result:AnyObject) in
             var response:NSDictionary = result as NSDictionary
             var objects:NSArray = self.parseQueryResponse(response)
-            }, failure:failure)!
+            }, failure:failure)
     }
     
     func next(error:NSErrorPointer) -> NSArray {
@@ -179,14 +179,14 @@ class BaasioQuery: NSObject {
         return query(error)
     }
     
-    func nextInBackground(success:(NSArray) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func nextInBackground(success:(NSArray) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         if !hasMoreEntities() {
             var details:NSMutableDictionary = NSMutableDictionary.dictionary()
             details.setValue("Next entities isn't exist.", forKey:NSLocalizedDescriptionKey)
             
             var e:NSError = NSError.errorWithDomain("BaasioError", code:UNKNOWN_ERROR, userInfo:details)
             failure(e)
-            return nil!
+            return nil
         }
         return queryInBackground(success, failure:failure)
     }
@@ -206,7 +206,7 @@ class BaasioQuery: NSObject {
         return query(error)
     }
     
-    func prevInBackground(success:(NSArray) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func prevInBackground(success:(NSArray) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         _pos -= 2
         if _pos == -1 {
             clearCursor()
@@ -216,7 +216,7 @@ class BaasioQuery: NSObject {
             
             var e:NSError = NSError.errorWithDomain("BaasioError", code:UNKNOWN_ERROR, userInfo:details)
             failure(e)
-            return nil!
+            return nil
         }
         return queryInBackground(success, failure:failure)
     }

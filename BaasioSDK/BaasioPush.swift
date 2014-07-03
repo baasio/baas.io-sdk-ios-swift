@@ -63,11 +63,11 @@ class BaasioPush : NSObject {
         BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"DELETE", params:nil, error:error)
     }
     
-    func cancelReservedPushInBackground(uuid:String, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func cancelReservedPushInBackground(uuid:String, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         let path:String = "pushes/\(uuid)"
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil, success:{ (result:AnyObject) in
             success()
-            }, failure:failure)!
+            }, failure:failure)
     }
     
     class func registerUserNotificationSettings(settings:UIUserNotificationSettings) {
@@ -96,20 +96,20 @@ class BaasioPush : NSObject {
         BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"DELETE", params:nil, error:error)
     }
     
-    func unregisterInBackground(success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func unregisterInBackground(success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         var deviceID:String? = storedPushDeviceID()
         if deviceID == nil {
             success()
-            return nil!
+            return nil
         }
         
         let path:String = "\(PUSH_API_ENDPOINT)/\(deviceID)"
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil, success:{ (result:AnyObject) in
             success()
-            }, failure:failure)!
+            }, failure:failure)
     }
     
-    func didRegisterForRemoteNotifications(deviceToken:NSData, tags:NSArray, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func didRegisterForRemoteNotifications(deviceToken:NSData, tags:NSArray, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         var tag:NSArray = tags
         if tag == nil {
             tag = NSArray.array()
@@ -139,7 +139,8 @@ class BaasioPush : NSObject {
             if deviceID == oldDeviceID && storedUser == currentUser {
                 println("baasioPush : No Change")
                 success()
-                return nil!
+                return nil
+                
             } else {
                 println("baasioPush : Something change")
                 let params:NSDictionary = ["token":deviceID, "tags":tag]
@@ -147,7 +148,7 @@ class BaasioPush : NSObject {
                 return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"PUT", params:params, success:{ (result:AnyObject) in
                     self.storedPushDeviceInfo(deviceID)
                     success()
-                    }, failure:failure)!
+                    }, failure:failure)
             }
         } else {
             println("baasioPush : First registraion")
@@ -155,7 +156,7 @@ class BaasioPush : NSObject {
         }
     }
     
-    func registerForFirst(tags:NSArray, deviceID:String, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func registerForFirst(tags:NSArray, deviceID:String, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         let params = ["token":deviceID, "platform":"I", "tags":tags]
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(PUSH_API_ENDPOINT, method:"POST", params:params, success:{ (result:AnyObject) in
             self.storedPushDeviceInfo(deviceID)
@@ -170,7 +171,7 @@ class BaasioPush : NSObject {
                 } else {
                     failure(error)
                 }
-            })!
+            })
     }
     
     func tagUpdate(tags:NSArray, error:NSErrorPointer) {
@@ -185,18 +186,18 @@ class BaasioPush : NSObject {
         BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"PUT", params:params, error:error)
     }
     
-    func tagUpdateInBackground(tags:NSArray, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func tagUpdateInBackground(tags:NSArray, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         let deviceID = storedPushDeviceID()
         if deviceID == nil {
             success()
-            return nil!
+            return nil
         }
         
         let path = "\(PUSH_API_ENDPOINT)/\(deviceID)"
         let params = ["tags":tags]
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"PUT", params:params, success:{ (result:AnyObject) in
             success()
-            }, failure:failure)!
+            }, failure:failure)
     }
     
     func pushOn(error:NSErrorPointer) {
@@ -210,11 +211,11 @@ class BaasioPush : NSObject {
         BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"PUT", params:params, error:error)
     }
     
-    func pushOnInBackground(success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func pushOnInBackground(success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         let deviceID = storedPushDeviceID()
         if deviceID == nil {
             success()
-            return nil!
+            return nil
         }
         
         let path = "\(PUSH_API_ENDPOINT)/\(deviceID)"
@@ -222,7 +223,7 @@ class BaasioPush : NSObject {
         
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"PUT", params:params, success:{ (result:AnyObject) in
             success()
-            }, failure:failure)!
+            }, failure:failure)
     }
     
     func pushOff(error:NSErrorPointer) {
@@ -236,11 +237,11 @@ class BaasioPush : NSObject {
         BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"PUT", params:params, error:error)
     }
     
-    func pushOffInBackground(success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func pushOffInBackground(success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         let deviceID = storedPushDeviceID()
         if deviceID == nil {
             success()
-            return nil!
+            return nil
         }
         
         let path = "\(PUSH_API_ENDPOINT)/\(deviceID)"
@@ -248,6 +249,6 @@ class BaasioPush : NSObject {
         
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"PUT", params:params, success:{ (result:AnyObject) in
             success()
-            }, failure:failure)!
+            }, failure:failure)
     }
 }

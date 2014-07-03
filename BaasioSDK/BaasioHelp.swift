@@ -9,31 +9,31 @@
 import Foundation
 
 class BaasioHelp : NSObject {
-    func getHelpsInBackground(success:(NSArray) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func getHelpsInBackground(success:(NSArray) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         return searchHelpsInBackground("", success:success, failure:failure)
     }
     
-    func searchHelpsInBackground(keyword:String, success:(NSArray) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func searchHelpsInBackground(keyword:String, success:(NSArray) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         var param:NSDictionary = ["keyword":keyword]
         
         return BaasioNetworkManager.sharedInstance().connectWithHTTP("help/helps", method:"GET", params:param, success:{ (result:AnyObject) in
             var response:NSDictionary = result as NSDictionary
             var objects:NSArray = NSArray(array:response["entities"] as NSArray)
             success(objects)
-            }, failure:failure)!
+            }, failure:failure)
     }
     
-    func getHelpDetailInBackground(uuid:String, success:(NSDictionary) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func getHelpDetailInBackground(uuid:String, success:(NSDictionary) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         let path:String = "help/helps/\(uuid)"
         
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"GET", params:nil, success:{ (result:AnyObject) in
             var response:NSDictionary = result as NSDictionary
             var objects:NSArray = NSArray(array:response["entities"] as NSArray)
             success(objects[0] as NSDictionary)
-            }, failure:failure)!
+            }, failure:failure)
     }
     
-    func sendQuestionInBackground(email:String, content:String, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func sendQuestionInBackground(email:String, content:String, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         var param = ["email":email,
             "content":content,
             "temporary_answer":"temporary_answer",
@@ -51,6 +51,6 @@ class BaasioHelp : NSObject {
         let path:String = "help/questions"
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"POST", params:param, success:{ (result:AnyObject) in
             success()
-            }, failure:failure)!
+            }, failure:failure)
     }
 }

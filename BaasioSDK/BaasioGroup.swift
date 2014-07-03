@@ -30,7 +30,7 @@ class BaasioGroup : BaasioEntity {
         BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"POST", params:NSDictionary(), error:error)
     }
     
-    func addInBackground(success:(BaasioGroup) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func addInBackground(success:(BaasioGroup) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         let path:String = "groups/\(_group)/users/\(_user)"
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"POST", params:nil, success:{ (result:AnyObject) in
             var array = result["entities"] as NSArray
@@ -38,7 +38,7 @@ class BaasioGroup : BaasioEntity {
             var group:BaasioGroup = BaasioGroup()
             group.set(dictionary)
             success(group)
-            }, failure:failure)!
+            }, failure:failure)
     }
     
     func remove(error:NSErrorPointer) {
@@ -46,11 +46,11 @@ class BaasioGroup : BaasioEntity {
         BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"DELETE", params:nil, error:error)
     }
     
-    func removeInBackground(success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    func removeInBackground(success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         let path:String = "groups/\(_group)/users/\(_user)"
         return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil, success:{ (result:AnyObject) in
             success()
-            }, failure:failure)!
+            }, failure:failure)
     }
     
     func getInBackground(uuid:String, success:(BaasioGroup) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {

@@ -110,9 +110,9 @@ class BaasioFile: BaasioEntity {
         NSException.raise("BaasioUnsupportedException", format:"Don't connect in Baasiofile.", arguments:nil!)
     }
     
-    override func connectInBackground(entity:BaasioEntity, relationship:String, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
+    override func connectInBackground(entity:BaasioEntity, relationship:String, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         NSException.raise("BaasioUnsupportedException", format:"Don't connect in Baasiofile.", arguments:nil!)
-        return nil!
+        return nil
     }
     
     func setContentType(contentType:String) {
