@@ -27,13 +27,14 @@ class BaasioGroup : BaasioEntity {
     
     func add(error:NSErrorPointer) {
         let path:String = "groups/\(_group)/users/\(_user)"
-        BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"POST", params:nil!, error:error)
+        BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"POST", params:NSDictionary(), error:error)
     }
     
     func addInBackground(success:(BaasioGroup) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
         let path:String = "groups/\(_group)/users/\(_user)"
-        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"POST", params:nil!, success:{ (result:AnyObject) in
-            var dictionary:NSDictionary = result["entities"]![0] as NSDictionary
+        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"POST", params:nil, success:{ (result:AnyObject) in
+            var array = result["entities"] as NSArray
+            var dictionary:NSDictionary = array[0] as NSDictionary
             var group:BaasioGroup = BaasioGroup()
             group.set(dictionary)
             success(group)
@@ -42,12 +43,12 @@ class BaasioGroup : BaasioEntity {
     
     func remove(error:NSErrorPointer) {
         let path:String = "groups/\(_group)/users/\(_user)"
-        BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"DELETE", params:nil!, error:error)
+        BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"DELETE", params:nil, error:error)
     }
     
     func removeInBackground(success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
         let path:String = "groups/\(_group)/users/\(_user)"
-        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil!, success:{ (result:AnyObject) in
+        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil, success:{ (result:AnyObject) in
             success()
             }, failure:failure)!
     }

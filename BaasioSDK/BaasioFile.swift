@@ -78,7 +78,7 @@ class BaasioFile: BaasioEntity {
     }
     
     func fileUploadInBackground(success:(BaasioFile) -> (Void), failure:(NSError) -> (Void), progress:(Float) -> (Void)) -> NSOperation {
-        return BaasioNetworkManager.sharedInstance().multipartFormRequest(entityName!, method:"POST", bodyData:data!, params:dictionary, filename:filename!, contentType:contentType!,
+        return BaasioNetworkManager.sharedInstance().multipartFormRequest(entityName!, method:"POST", bodyData:data!, params:dictionary, filename:filename!, contentType:contentType,
             success:success, failure:failure, progress:progress)
     }
     

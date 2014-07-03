@@ -25,7 +25,7 @@ class BaasioNetworkManager: NSObject {
         return Static.instance!
     }
     
-    func connectWithHTTP(path:String, method:String, params:NSDictionary, success:(AnyObject) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
+    func connectWithHTTP(path:String, method:String, params:NSDictionary?, success:(AnyObject) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {
         logging(path, method: method, params: params)
         
         var baseURL = Baasio.sharedInstance().getAPIURL()
@@ -48,14 +48,16 @@ class BaasioNetworkManager: NSObject {
         request = Baasio.sharedInstance().setAuthorization(request)
         
         if method == "POST" || method == "PUT" {
-            var data:NSData = NSJSONSerialization.dataWithJSONObject(params, options:NSJSONWritingOptions.PrettyPrinted, error:&error)
-            
-            if error != nil {
-                failure(error!)
-                return nil
+            if params != nil {
+                var data:NSData = NSJSONSerialization.dataWithJSONObject(params, options:NSJSONWritingOptions.PrettyPrinted, error:&error)
+                
+                if error != nil {
+                    failure(error!)
+                    return nil
+                }
+                
+                request.HTTPBody = data
             }
-            
-            request.HTTPBody = data
         }
         
         var operation:AFHTTPRequestOperation = manager.HTTPRequestOperationWithRequest(request,
@@ -74,8 +76,8 @@ class BaasioNetworkManager: NSObject {
         return operation
     }
     
-    func connectWithHTTPSync(path: String, method: String, params:NSDictionary, error:NSErrorPointer) -> AnyObject {
-        println("connectWithHTTPSync")
+    func connectWithHTTPSync(path: String, method: String, params:NSDictionary?, error:NSErrorPointer) -> AnyObject? {
+        logging(path, method: method, params: params)
         var response:AnyObject?
         var isFinish:Bool = false
         var blockError:NSError?
@@ -96,10 +98,10 @@ class BaasioNetworkManager: NSObject {
             error.memory = blockError
         }
         
-        return response!
+        return response
     }
     
-    func multipartFormRequest(path:String, method:String, bodyData:NSData, params:NSDictionary, filename:String, contentType:String, success:(BaasioFile) -> (Void), failure:(NSError) -> (Void), progress:(Float) -> (Void)) -> AFHTTPRequestOperation {
+    func multipartFormRequest(path:String, method:String, bodyData:NSData, params:NSDictionary, filename:String, contentType:String?, success:(BaasioFile) -> (Void), failure:(NSError) -> (Void), progress:(Float) -> (Void)) -> AFHTTPRequestOperation {
         fileLogging(path, httpMethod: method, bodyData: bodyData, params: params, filename: filename, contentType: contentType)
         
         var url:NSURL = Baasio.sharedInstance().getAPIURL()
@@ -117,6 +119,7 @@ class BaasioNetworkManager: NSObject {
                         _contentType = self.mimeTypeForFileAtPath(filename)
                         mutableParams.setObject(_contentType, forKey:"content-type")
                     }
+                    
                     formData.appendPartWithFileData(bodyData, name:"file", fileName:filename, mimeType:_contentType)
 
                     var error:NSError?
@@ -136,7 +139,8 @@ class BaasioNetworkManager: NSObject {
                 NetworkActivityIndicatorManager.sharedInstance().hide()
                 
                 var dictionary:NSDictionary = responseObject as NSDictionary
-                var entities:NSDictionary = dictionary["entities"]![0] as NSDictionary
+                var array = dictionary["entities"] as NSArray
+                var entities:NSDictionary = array[0] as NSDictionary
                 
                 var file:BaasioFile = BaasioFile()
                 file.set(entities)
@@ -161,12 +165,7 @@ class BaasioNetworkManager: NSObject {
     }
     
 // MARK: - API response method
-    
-    func test(block:(NSError) -> (Void)) {
-        var error:NSError?
-        var closure = failure(block)
-    }
-    
+
     func failure(failure:(NSError) -> (Void)) -> ((NSURLRequest, NSHTTPURLResponse, NSError, AnyObject) -> Void) {
         var failureClosure = {
             (request:NSURLRequest, response:NSHTTPURLResponse, error:NSError, JSON:AnyObject) -> Void in
@@ -213,7 +212,7 @@ class BaasioNetworkManager: NSObject {
         return CFBridgingRelease(mimeType) as String
     }
     
-    func fileLogging(path:String, httpMethod:String, bodyData:NSData, params:NSDictionary, filename:String, contentType:String) {
+    func fileLogging(path:String, httpMethod:String, bodyData:NSData, params:NSDictionary, filename:String, contentType:String?) {
         if Baasio.sharedInstance().isDebugMode() {
             let urlPrefix = Baasio.sharedInstance().getAPIURL().absoluteString
             
@@ -228,7 +227,7 @@ class BaasioNetworkManager: NSObject {
         }
     }
     
-    func logging(path:String, method:String, params:NSDictionary) {
+    func logging(path:String, method:String, params:NSDictionary?) {
         if Baasio.sharedInstance().isDebugMode() {
             var urlPrefix:String = Baasio.sharedInstance().getAPIURL().absoluteString
             println("- Start - -------------------------------------------------------------------------")

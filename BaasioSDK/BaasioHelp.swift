@@ -26,7 +26,7 @@ class BaasioHelp : NSObject {
     func getHelpDetailInBackground(uuid:String, success:(NSDictionary) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
         let path:String = "help/helps/\(uuid)"
         
-        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"GET", params:nil!, success:{ (result:AnyObject) in
+        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"GET", params:nil, success:{ (result:AnyObject) in
             var response:NSDictionary = result as NSDictionary
             var objects:NSArray = NSArray(array:response["entities"] as NSArray)
             success(objects[0] as NSDictionary)

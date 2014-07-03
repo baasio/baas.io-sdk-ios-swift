@@ -133,7 +133,7 @@ class BaasioQuery: NSObject {
         
         var path:String = "\(prefixPath)\(description())"
         
-        var response:NSDictionary = BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"GET", params:nil!, error:error) as NSDictionary
+        var response:NSDictionary = BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"GET", params:nil, error:error) as NSDictionary
         
         var objects:NSArray = parseQueryResponse(response)
         return objects
@@ -160,7 +160,7 @@ class BaasioQuery: NSObject {
         
         let path = "\(prefixPath)\(description())"
         
-        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"GET", params:nil!, success:{
+        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"GET", params:nil, success:{
             (result:AnyObject) in
             var response:NSDictionary = result as NSDictionary
             var objects:NSArray = self.parseQueryResponse(response)

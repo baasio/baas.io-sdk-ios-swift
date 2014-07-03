@@ -44,7 +44,7 @@ class BaasioPush : NSObject {
         }
     }
     
-    func sendPush(message:BaasioMessage, error:NSErrorPointer) -> AnyObject {
+    func sendPush(message:BaasioMessage, error:NSErrorPointer) -> AnyObject? {
         var params:NSDictionary = message.dictionary()
         return BaasioNetworkManager.sharedInstance().connectWithHTTPSync("pushes", method:"POST", params:params, error:error)
     }
@@ -60,12 +60,12 @@ class BaasioPush : NSObject {
     
     func cancelReservedPush(uuid:String, error:NSErrorPointer) {
         let path:String = "pushes/\(uuid)"
-        BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"DELETE", params:nil!, error:error)
+        BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"DELETE", params:nil, error:error)
     }
     
     func cancelReservedPushInBackground(uuid:String, success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
         let path:String = "pushes/\(uuid)"
-        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil!, success:{ (result:AnyObject) in
+        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil, success:{ (result:AnyObject) in
             success()
             }, failure:failure)!
     }
@@ -93,7 +93,7 @@ class BaasioPush : NSObject {
         }
         
         let path:String = "\(PUSH_API_ENDPOINT)/\(deviceID)"
-        BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"DELETE", params:nil!, error:error)
+        BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"DELETE", params:nil, error:error)
     }
     
     func unregisterInBackground(success:(Void) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
@@ -104,7 +104,7 @@ class BaasioPush : NSObject {
         }
         
         let path:String = "\(PUSH_API_ENDPOINT)/\(deviceID)"
-        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil!, success:{ (result:AnyObject) in
+        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil, success:{ (result:AnyObject) in
             success()
             }, failure:failure)!
     }

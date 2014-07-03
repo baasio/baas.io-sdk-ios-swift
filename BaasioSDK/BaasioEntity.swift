@@ -67,7 +67,7 @@ class BaasioEntity: NSObject {
     }
     
     // MARK: - Data
-    func objectForKey(key:String) -> AnyObject {
+    func objectForKey(key:String) -> AnyObject? {
         return _entity[key]
     }
     
@@ -83,13 +83,13 @@ class BaasioEntity: NSObject {
     // MARK: - Entity
     class func get(entityName:String, uuid:String, error:NSErrorPointer) -> BaasioEntity {
         let path:String = "\(entityName)/\(uuid)"
-        return BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"GET", params:nil!, error:error) as BaasioEntity
+        return BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"GET", params:nil, error:error) as BaasioEntity
     }
     
     class func getInBackground(entityName:String, uuid:String, success:(BaasioEntity) -> (Void), failure:(NSError) -> (Void)) -> NSOperation {
         let path:String = "\(entityName)/\(uuid)"
         
-        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil!,
+        return BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil,
             success: { (result:AnyObject!) -> Void in
                 let response:NSDictionary = result as NSDictionary
                 var entities = response["entities"] as NSArray
@@ -128,12 +128,12 @@ class BaasioEntity: NSObject {
     // delete라는 기본 메소드가 추가됨으로 인해 이름 변경
     func deleteEntity(error:NSErrorPointer) {
         let path:String = "\(entityName)/\(uuid)"
-        BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"DELETE", params:nil!, error:error)
+        BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"DELETE", params:nil, error:error)
     }
     
     func deleteEntityInBackground(success:(Void) -> (Void), failure:(NSError) -> (Void)) {
         let path:String = "\(entityName)/\(uuid)"
-        BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil!,
+        BaasioNetworkManager.sharedInstance().connectWithHTTP(path, method:"DELETE", params:nil,
             success: { (result:AnyObject!) -> Void in
                 success()
             },
