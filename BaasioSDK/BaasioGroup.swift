@@ -27,7 +27,7 @@ class BaasioGroup : BaasioEntity {
     
     func add(error:NSErrorPointer) {
         let path:String = "groups/\(_group)/users/\(_user)"
-        BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"POST", params:NSDictionary(), error:error)
+        BaasioNetworkManager.sharedInstance().connectWithHTTPSync(path, method:"POST", params:nil, error:error)
     }
     
     func addInBackground(success:(BaasioGroup) -> (Void), failure:(NSError) -> (Void)) -> NSOperation? {

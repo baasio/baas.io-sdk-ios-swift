@@ -107,6 +107,7 @@ class BaasioNetworkManager: NSObject {
         var url:NSURL = Baasio.sharedInstance().getAPIURL()
         var manager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
         manager.requestSerializer = AFHTTPRequestSerializer()
+        manager.responseSerializer = AFJSONResponseSerializer()
         
         var error:NSError?
         var request:NSMutableURLRequest = manager.requestSerializer.multipartFormRequestWithMethod(method, URLString:"\(url)/\(path)", parameters:nil,
@@ -119,7 +120,6 @@ class BaasioNetworkManager: NSObject {
                         _contentType = self.mimeTypeForFileAtPath(filename)
                         mutableParams.setObject(_contentType, forKey:"content-type")
                     }
-                    
                     formData.appendPartWithFileData(bodyData, name:"file", fileName:filename, mimeType:_contentType)
 
                     var error:NSError?
@@ -133,7 +133,6 @@ class BaasioNetworkManager: NSObject {
         
         var failureClosure = self.failure(failure)
         
-        manager.responseSerializer = AFJSONResponseSerializer()
         var operation:AFHTTPRequestOperation = manager.HTTPRequestOperationWithRequest(request,
             success: { (operation:AFHTTPRequestOperation!, responseObject:AnyObject!) in
                 NetworkActivityIndicatorManager.sharedInstance().hide()
@@ -201,7 +200,7 @@ class BaasioNetworkManager: NSObject {
         return e
     }
     
-    func mimeTypeForFileAtPath(path:NSString) -> String {
+    func mimeTypeForFileAtPath(path:NSString) -> NSString {
         var pathExtension:NSString = path.pathExtension
         var UTI:Unmanaged<CFString> = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as CFString, nil)
         var mimeType = UTTypeCopyPreferredTagWithClass(UTI.takeRetainedValue(), kUTTagClassMIMEType)
@@ -209,7 +208,8 @@ class BaasioNetworkManager: NSObject {
         if !mimeType {
             return "application/octet-stream"
         }
-        return CFBridgingRelease(mimeType) as String
+//        return CFBridgingRelease(mimeType) as NSString
+        return mimeType.takeRetainedValue() as NSString
     }
     
     func fileLogging(path:String, httpMethod:String, bodyData:NSData, params:NSDictionary, filename:String, contentType:String?) {
